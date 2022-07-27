@@ -1,0 +1,3 @@
+[submodule "Orb-SLAM3"]
+	path = Orb-SLAM3
+	url = gitlab@code.orbbec.com.cn:Mars/Orb-SLAM3.git
