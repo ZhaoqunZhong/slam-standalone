@@ -3,6 +3,8 @@
 
 #define EIGEN_USE_BLAS
 #define EIGEN_USE_LAPACKE_STRICT
+#define lapack_complex_float std::complex<float>
+#define lapack_complex_double std::complex<double>
 #include "Eigen/Eigen"
 
 void CustomPrefix(std::ostream &s, const google::LogMessageInfo &l, void *)
