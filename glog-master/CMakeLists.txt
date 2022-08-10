@@ -5,6 +5,10 @@ project (glog
   HOMEPAGE_URL https://github.com/google/glog
   LANGUAGES CXX
 )
+# if (ANDROID_NDK)
+#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/aarch64-linux-gnu/include -L/usr/aarch64-linux-gnu/lib/")
+#     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/usr/aarch64-linux-gnu/include -L/usr/aarch64-linux-gnu/lib/")
+# endif()
 message(STATUS "gflags_DIR: ${gflags_DIR}")
 set (CPACK_PACKAGE_NAME glog)
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Google logging library")
@@ -154,6 +158,10 @@ cmake_push_check_state (RESET)
 
 if (Threads_FOUND)
   set (CMAKE_REQUIRED_LIBRARIES Threads::Threads)
+  get_target_property(Threads_lib_location Threads::Threads LOCATION)
+  get_target_property(Threads_include_dirs Threads::Threads INCLUDE_DIRECTORIES)
+  message(STATUS "<DEBUG> Threads_lib_location: ${Threads_lib_location}")
+  message(STATUS "<DEBUG> Threads_include_dirs: ${Threads_include_dirs}")
 endif (Threads_FOUND)
 
 check_cxx_symbol_exists (pthread_threadid_np "pthread.h" HAVE_PTHREAD_THREADID_NP)
@@ -641,7 +649,7 @@ endif (HAVE_DBGHELP)
 
 if (HAVE_PTHREAD)
   target_link_libraries (glog PRIVATE ${CMAKE_THREAD_LIBS_INIT})
-
+  message(STATUS "<DEBUG> CMAKE_THREAD_LIBS_INIT: ${CMAKE_THREAD_LIBS_INIT}")
   if (CMAKE_THREAD_LIBS_INIT)
     set (glog_libraries_options_for_static_linking "${glog_libraries_options_for_static_linking} ${CMAKE_THREAD_LIBS_INIT}")
   endif (CMAKE_THREAD_LIBS_INIT)
@@ -1108,3 +1116,4 @@ install (DIRECTORY ${_glog_BINARY_CMake_DATADIR}
 
 install (EXPORT glog-targets NAMESPACE glog:: DESTINATION
   ${_glog_CMake_INSTALLDIR})
+

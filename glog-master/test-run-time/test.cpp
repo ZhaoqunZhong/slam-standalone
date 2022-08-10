@@ -1,5 +1,6 @@
 #include "glog/logging.h"
 #include <iomanip>
+#include <pthread.h>
 
     void CustomPrefix(std::ostream &s, const google::LogMessageInfo &l, void*) {
        s << l.severity[0]
@@ -19,6 +20,11 @@
        << "CUSTOM PREFIX";
     }
 
+static void* test_func(void* data)
+{
+  return data;
+}
+
 int main(int argc, char** argv) {
     google::InitGoogleLogging(argv[0], &CustomPrefix);
     FLAGS_logtostdout = true;
@@ -30,4 +36,14 @@ int main(int argc, char** argv) {
     LOG(WARNING) << "Run time linking to glog lib success.";
     LOG(ERROR) << "Run time linking to glog lib success.";
     LOG(INFO) << "gflags version string: " << std::string(gflags::VersionString());
+
+    pthread_t thread;
+    pthread_create(&thread, NULL, test_func, NULL);
+    pthread_detach(thread);
+    pthread_cancel(thread);
+    pthread_join(thread, NULL);
+    pthread_atfork(NULL, NULL, NULL);
+    pthread_exit(NULL);
+
+    return 0;
 }

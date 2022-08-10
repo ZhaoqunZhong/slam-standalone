@@ -70,7 +70,7 @@
 ## - GFLAGS_INSTALL_SHARED_LIBS
 ## - GFLAGS_INSTALL_STATIC_LIBS
 
-cmake_minimum_required (VERSION 3.0.2 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.15 FATAL_ERROR)
 
 if (POLICY CMP0042)
   cmake_policy (SET CMP0042 NEW)
@@ -318,6 +318,10 @@ endif ()
 if (BUILD_gflags_LIB)
   set (CMAKE_THREAD_PREFER_PTHREAD TRUE)
   find_package (Threads)
+  get_target_property(Threads_lib_location Threads::Threads LOCATION)
+  get_target_property(Threads_include_dirs Threads::Threads INCLUDE_DIRECTORIES)
+  message(STATUS "[DEBUG] Threads_lib_location: ${Threads_lib_location}")
+  message(STATUS "[DEBUG] Threads_include_dirs: ${Threads_include_dirs}")
   if (Threads_FOUND AND CMAKE_USE_PTHREADS_INIT)
     set (HAVE_PTHREAD 1)
     check_type_size (pthread_rwlock_t RWLOCK LANGUAGE CXX)
@@ -337,6 +341,7 @@ if (BUILD_gflags_LIB)
 else ()
   set (HAVE_PTHREAD 0)
 endif ()
+message(STATUS "[DEBUG] HAVE_PTHREAD: ${HAVE_PTHREAD}")
 
 # ----------------------------------------------------------------------------
 # source files - excluding root subdirectory and/or .in suffix
@@ -480,6 +485,7 @@ foreach (TYPE IN ITEMS STATIC SHARED)
           target_compile_definitions (${target_name} PRIVATE NO_THREADS)
         elseif (CMAKE_USE_PTHREADS_INIT)
           target_link_libraries (${target_name} ${CMAKE_THREAD_LIBS_INIT})
+          message(STATUS "[DEBUG] CMAKE_THREAD_LIBS_INIT: ${CMAKE_THREAD_LIBS_INIT}")
         endif ()
         if (HAVE_SHLWAPI_H)
           target_link_libraries (${target_name} shlwapi.lib)

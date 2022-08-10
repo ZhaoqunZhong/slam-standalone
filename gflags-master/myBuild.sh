@@ -11,14 +11,15 @@ if [ -d "$DIRECTORY" ]; then
   rm -r *
 else
   mkdir build
-  cd buildldd
+  cd build
 fi
 
-cmake -DCMAKE_BUILD_TYPE=Release \
+cmake -DCMAKE_CXX_STANDARD=17 \
+  -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=../install \
   -DBUILD_SHARED_LIBS=ON \
   ..
 
-make -j6
+make -j4
 
 make install

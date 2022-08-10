@@ -3,3 +3,5 @@ build/
 install/
 stage/
 bin.v2/
+android-build/
+android-install/
