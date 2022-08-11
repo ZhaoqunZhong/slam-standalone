@@ -1,3 +1,4 @@
+
 DIRECTORY='install'
 if [ -d "$DIRECTORY" ]; then
   # echo "build folder exists"
@@ -26,6 +27,6 @@ cmake -DCMAKE_CXX_STANDARD=17 \
   -DBUILD_EXAMPLES=OFF \
   ..
 
-make -j6
+make -j4
 
 make install

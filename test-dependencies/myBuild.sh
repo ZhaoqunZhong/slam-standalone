@@ -1,3 +1,4 @@
+
 DIRECTORY='build'
 if [ -d "$DIRECTORY" ]; then
   # echo "build folder exists"
@@ -24,5 +25,5 @@ cmake -DCMAKE_CXX_STANDARD=17 \
   ..
 
 
-make -j6
+make -j4
 

@@ -1,3 +1,9 @@
+
+export CC=/usr/bin/clang-15
+export CXX=/usr/bin/clang++-15
+export CPP=/usr/bin/clang-cpp-15
+export LD=/usr/bin/ld64.lld-15
+
 DIRECTORY='install'
 if [ -d "$DIRECTORY" ]; then
   # echo "build folder exists"
@@ -16,7 +22,8 @@ fi
 
 # SOURCE_ROOT_DIR=/home/zhegushao/Documents/orb-standalone
 
-cmake -DCMAKE_CXX_STANDARD=17 \
+cmake -Duse_CLANG=ON \
+  -DCMAKE_CXX_STANDARD=17 \
   -Dgflags_DIR=$SOURCE_ROOT_DIR/gflags-master/install/lib/cmake/gflags \
   -Dglog_DIR=$SOURCE_ROOT_DIR/glog-master/install/lib/cmake/glog \
   -DEigen3_DIR=$SOURCE_ROOT_DIR/eigen-3.4.0/install/share/eigen3/cmake \

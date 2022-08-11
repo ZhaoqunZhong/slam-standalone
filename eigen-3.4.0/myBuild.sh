@@ -1,3 +1,4 @@
+
 DIRECTORY='install'
 if [ -d "$DIRECTORY" ]; then
   # echo "build folder exists"
@@ -28,6 +29,6 @@ cmake -DCMAKE_CXX_STANDARD=17 \
   -DLIB_INSTALL_DIR=$SOURCE_ROOT_DIR/suitesparse-metis-for-windows/install/lib \
   ..
 
-make -j6
+make -j4
 
 make install

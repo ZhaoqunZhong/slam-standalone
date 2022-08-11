@@ -141,6 +141,11 @@ enable_testing()
 
 project(OpenCV CXX C)
 
+if (use_CLANG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/lib/llvm-10/include/openmp -L/usr/lib/llvm-10/lib/")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/usr/lib/llvm-10/include/openmp -L/usr/lib/llvm-10/lib/")
+endif()
+
 if(MSVC)
   set(CMAKE_USE_RELATIVE_PATHS ON CACHE INTERNAL "" FORCE)
 endif()

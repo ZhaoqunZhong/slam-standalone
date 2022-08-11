@@ -1,3 +1,4 @@
+
 DIRECTORY='install'
 if [ -d "$DIRECTORY" ]; then
   # echo "build folder exists"

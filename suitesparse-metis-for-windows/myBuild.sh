@@ -22,6 +22,6 @@ cmake -DCMAKE_CXX_STANDARD=17 \
   -DBUILD_SHARED_LIBS=ON \
   ..
 
-make -j6
+make -j4
 
 make install
