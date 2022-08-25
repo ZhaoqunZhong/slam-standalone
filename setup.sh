@@ -1,4 +1,4 @@
-sudo apt-get install liblapack-dev libblas-dev libgtk2.0-dev libcanberra-gtk-module libcanberra-gtk3-module
+sudo apt-get install liblapack-dev libblas-dev libgtk2.0-dev libcanberra-gtk-module libcanberra-gtk3-module libtbb-dev libflann-dev libvtk7-dev
 # gtk related ones are for opencv.
 
 SOURCE_ROOT_DIR=$(pwd)

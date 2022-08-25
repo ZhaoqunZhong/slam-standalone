@@ -34,6 +34,6 @@ cmake -Duse_CLANG=ON \
   -DBUILD_SHARED_LIBS=ON \
   ..
 
-make -j6
+make -j4
 
 make install

@@ -37,6 +37,7 @@ function(find_available_ceres_threading_models CERES_THREADING_MODELS_AVAILABLE_
   find_package(OpenMP QUIET)
   if (NOT OPENMP_FOUND)
     list(REMOVE_ITEM CERES_THREADING_MODELS_AVAILABLE "OPENMP")
+    message(STATUS "<DEBUG> OPENMP NOT FOUND.")
   endif()
   if (NOT CERES_THREADING_MODELS_AVAILABLE)
     # At least NO_THREADS should never be removed.  This check is purely
