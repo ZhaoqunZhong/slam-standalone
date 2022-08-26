@@ -38,13 +38,13 @@ find_package(OpenCV 4.5.5 EXACT REQUIRED)
 find_package(Boost 1.79.0 EXACT REQUIRED)
 find_package(Sophus 22.4.1 EXACT REQUIRED)
 find_package(PCL 1.12.1.99 EXACT REQUIRED)
+find_package(glog 0.6.0 EXACT REQUIRED)
 
 # SSE flags
 # rosbuild_check_for_sse()
 
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO
-   "${SSE_FLAGS} -O3 -march=native"
-)
+set(CMAKE_CXX_FLAGS "${SSE_FLAGS} -O3 -march=native")
+
 
 add_library(${PROJECT_NAME} 
     src/core/interpolation.cpp
@@ -66,12 +66,13 @@ add_library(${PROJECT_NAME}
     src/dense_tracking_config.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME} PUBLIC
     tbb
     boost_thread
     Eigen3::Eigen
     ${OpenCV_LIBS}
     Sophus::Sophus
+    glog::glog
     # PCL_VISUALIZATION
     # PCL_IO
 )
@@ -80,21 +81,29 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     include
     ${PCL_INCLUDE_DIRS})
 
-add_library(dvo_visualization
-    src/visualization/async_point_cloud_builder.cpp
-    src/visualization/point_cloud_aggregator.cpp
-    src/visualization/pcl_camera_trajetory_visualizer.cpp
-)
+# add_library(dvo_visualization
+#     src/visualization/async_point_cloud_builder.cpp
+#     src/visualization/point_cloud_aggregator.cpp
+#     src/visualization/pcl_camera_trajetory_visualizer.cpp
+# )
 
-target_link_libraries(dvo_visualization
-  ${PROJECT_NAME} 
-)
+# target_link_libraries(dvo_visualization
+#   ${PROJECT_NAME} 
+# )
 
-add_executable(sse_test
-   src/sse_test.cpp
-   src/core/math_sse.cpp
-)
+# add_executable(sse_test
+#    src/sse_test.cpp
+#    src/core/math_sse.cpp
+# )
 
-target_link_libraries(sse_test
-  ${PROJECT_NAME} 
-)
+# target_link_libraries(sse_test
+#   ${PROJECT_NAME} 
+# )
+
+add_executable(dvo_test_tum 
+    dvo_test_tum.cpp
+    vss/vss.cpp
+    vss/vss_impl.cpp)
+
+target_link_libraries(dvo_test_tum 
+    ${PROJECT_NAME})

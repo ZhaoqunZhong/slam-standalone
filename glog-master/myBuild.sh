@@ -24,6 +24,6 @@ cmake -Dgflags_DIR=${SOURCE_ROOT_DIR}/gflags-master/install/lib/cmake/gflags \
   -DBUILD_SHARED_LIBS=ON \
   ..
 
-make -j6
+make -j4
 
 make install
