@@ -43,7 +43,7 @@ find_package(glog 0.6.0 EXACT REQUIRED)
 # SSE flags
 # rosbuild_check_for_sse()
 
-set(CMAKE_CXX_FLAGS "${SSE_FLAGS} -O3 -march=native")
+set(CMAKE_CXX_FLAGS "${SSE_FLAGS} ${AVX_FLAGS} -O3 -march=native")
 
 
 add_library(${PROJECT_NAME} 
@@ -73,23 +73,22 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ${OpenCV_LIBS}
     Sophus::Sophus
     glog::glog
-    # PCL_VISUALIZATION
-    # PCL_IO
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     include
     ${PCL_INCLUDE_DIRS})
 
-# add_library(dvo_visualization
-#     src/visualization/async_point_cloud_builder.cpp
-#     src/visualization/point_cloud_aggregator.cpp
-#     src/visualization/pcl_camera_trajetory_visualizer.cpp
-# )
+add_library(dvo_visualization
+    src/visualization/async_point_cloud_builder.cpp
+    src/visualization/point_cloud_aggregator.cpp
+    src/visualization/pcl_camera_trajetory_visualizer.cpp
+)
 
-# target_link_libraries(dvo_visualization
-#   ${PROJECT_NAME} 
-# )
+target_link_libraries(dvo_visualization PUBLIC
+  ${PROJECT_NAME} 
+  ${PCL_LIBRARIES}
+)
 
 # add_executable(sse_test
 #    src/sse_test.cpp
@@ -100,10 +99,21 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 #   ${PROJECT_NAME} 
 # )
 
+add_library(RosTime SHARED
+        src/rostime/rate.cpp
+        src/rostime/time.cpp
+        src/rostime/duration.cpp
+        )
+target_include_directories(RosTime PUBLIC
+    include/dvo_benchmark
+    )
+
 add_executable(dvo_test_tum 
     dvo_test_tum.cpp
     vss/vss.cpp
     vss/vss_impl.cpp)
 
 target_link_libraries(dvo_test_tum 
-    ${PROJECT_NAME})
+    ${PROJECT_NAME}
+    dvo_visualization
+    RosTime)

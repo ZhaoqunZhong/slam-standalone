@@ -4,6 +4,8 @@
 #define VSS_IMPL_H
 
 #include "vss.h"
+#include "dvo/dense_tracking.h"
+#include "dvo/visualization/camera_trajectory_visualizer.h"
 
 namespace vss
 {
@@ -23,6 +25,20 @@ public:
               float &confidence);
 
 private:
+   uint32_t width;
+   uint32_t height;
+
+   boost::shared_ptr<dvo::DenseTracker> tracker;
+   dvo::DenseTracker::Config tracker_cfg;
+   dvo::core::RgbdCameraPyramidPtr camera;
+   dvo::core::RgbdImagePyramidPtr current, reference;
+   Eigen::Affine3d accumulated_transform, from_baselink_to_asus, latest_absolute_transform_;
+
+   size_t frames_since_last_success;
+   dvo::visualization::CameraTrajectoryVisualizerInterface *vis_;
+
+   CameraParameters cam_parameters_;
+
 };
 
 }

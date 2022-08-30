@@ -42,6 +42,7 @@ private:
   int count;
   int interval;
   boost::accumulators::accumulator_set<double, boost::accumulators::stats<boost::accumulators::tag::mean> > acc;
+  double last_duration;
 
 public:
   stopwatch(std::string name, int interval = 500) : name(name + ": "), count(0), interval(interval)
@@ -56,8 +57,8 @@ public:
   inline void stop()
   {
     int64_t duration = cv::getTickCount() - begin;
-
-    acc(double(duration) / cv::getTickFrequency());
+    last_duration = double(duration) / cv::getTickFrequency();
+    acc(last_duration);
 
     count++;
   }
@@ -79,6 +80,10 @@ public:
   {
     stop();
     print();
+  }
+
+  inline double getLastDuration() {
+    return last_duration;
   }
 };
 

@@ -8,12 +8,12 @@ if(POLICY CMP0074)
 endif()
 
 # Set target C++ standard and required compiler features
-set(CMAKE_CXX_STANDARD 14 CACHE STRING "The target C++ standard. PCL requires C++14 or higher.")
+set(CMAKE_CXX_STANDARD 17 CACHE STRING "The target C++ standard. PCL requires C++17 or higher.")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(PCL_CXX_COMPILE_FEATURES cxx_std_14)
+set(PCL_CXX_COMPILE_FEATURES cxx_std_17)
 
-set(CMAKE_CUDA_STANDARD 14 CACHE STRING "The target CUDA/C++ standard. PCL requires CUDA/C++ 14 or higher.")
+set(CMAKE_CUDA_STANDARD 17 CACHE STRING "The target CUDA/C++ standard. PCL requires CUDA/C++ 17 or higher.")
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "possible configurations" FORCE)
@@ -102,8 +102,8 @@ if(PCL_ENABLE_SSE AND "${CMAKE_CXX_FLAGS}" STREQUAL "${CMAKE_CXX_FLAGS_DEFAULT}"
 endif()
 
 # check for AVX flags
+include("${PCL_SOURCE_DIR}/cmake/pcl_find_avx.cmake")
 if(PCL_ENABLE_AVX AND "${CMAKE_CXX_FLAGS}" STREQUAL "${CMAKE_CXX_FLAGS_DEFAULT}")
-  include("${PCL_SOURCE_DIR}/cmake/pcl_find_avx.cmake")
   PCL_CHECK_FOR_AVX()
 endif()
 
@@ -201,9 +201,6 @@ if(CMAKE_COMPILER_IS_PATHSCALE)
 endif()
 
 if(CMAKE_COMPILER_IS_CLANG)
-  #OPENMP
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/lib/llvm-10/include/openmp -L/usr/lib/llvm-10/lib/")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/usr/lib/llvm-10/include/openmp -L/usr/lib/llvm-10/lib/")
   if("${CMAKE_C_FLAGS}" STREQUAL "${CMAKE_CXX_FLAGS_DEFAULT}")
     set(CMAKE_C_FLAGS "-Qunused-arguments")
   endif()
@@ -281,6 +278,9 @@ endif()
 # OpenMP (optional)
 option(WITH_OPENMP "Build with parallelization using OpenMP" TRUE)
 if(WITH_OPENMP)
+  #OPENMP
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/lib/llvm-10/include/openmp -L/usr/lib/llvm-10/lib/")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/usr/lib/llvm-10/include/openmp -L/usr/lib/llvm-10/lib/")
   find_package(OpenMP COMPONENTS C CXX)
 endif()
 if(OpenMP_FOUND)

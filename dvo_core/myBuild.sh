@@ -30,7 +30,7 @@ cmake -DCMAKE_CXX_STANDARD=17 \
   -DSophus_DIR=$SOURCE_ROOT_DIR/Sophus-master/install/share/sophus/cmake \
   -Dglog_DIR=$SOURCE_ROOT_DIR/glog-master/install/lib/cmake/glog \
   -Dgflags_DIR=$SOURCE_ROOT_DIR/gflags-master/install/lib/cmake/gflags \
-  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DBUILD_SHARED_LIBS=ON \
   ..
 

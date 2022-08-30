@@ -10,6 +10,8 @@ namespace vss
 
 struct CameraParameters
 {
+    uint32_t width;
+    uint32_t height;
     float fx;
     float fy;
     float cx;
@@ -18,7 +20,7 @@ struct CameraParameters
     float k2;
     float p1;
     float p2;
-    unsigned int depth_factor;
+    float depth_factor;
 };
 
 class VssRGBD

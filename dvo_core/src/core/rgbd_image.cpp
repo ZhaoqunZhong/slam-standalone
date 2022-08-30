@@ -353,6 +353,7 @@ void RgbdImage::initialize()
   }
   if(hasDepth())
   {
+        // std::cout << "[debug] " << std::to_string(depth.type()) << " " << std::to_string(cv::DataType<DepthType>::type) << std::endl;
     assert(depth.type() == cv::DataType<DepthType>::type && depth.channels() == 1);
     width = depth.cols;
     height = depth.rows;
