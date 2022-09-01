@@ -71,7 +71,8 @@ public:
   {
     ShowCameraAndCloud,
     ShowCamera,
-    ShowNothing
+    ShowNothing,
+    ShowWholeCloud
   };
 
   typedef boost::shared_ptr<CameraVisualizer> Ptr;

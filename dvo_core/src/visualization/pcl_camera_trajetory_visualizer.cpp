@@ -145,11 +145,11 @@ public:
   {
     boost::mutex::scoped_lock lock(m_);
 
-    std::string cube_id = name() + "_cube";
+    // std::string cube_id = name() + "_cube";
 
-    visualizer.removeShape(cube_id);
+    // visualizer.removeShape(cube_id);
 
-    if(visibility_ != ShowCameraAndCloud)
+    if(visibility_ != ShowCameraAndCloud && visibility_ != ShowWholeCloud)
     {
       //visualizer.removePointCloud(name());
       aggregator.remove(name());
@@ -160,21 +160,35 @@ public:
       if(visibility_ == ShowCameraAndCloud)
       {
         aggregator.add(name(), cloud_->build());
-        //if(!visualizer.updatePointCloud(cloud_->build(), name()))
-        //{
+        // if(!visualizer.updatePointCloud(cloud_->build(), name()))
+        // {
         //  visualizer.addPointCloud(cloud_->build(), name());
-        //}
-        //visualizer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, name());
+        // }
+        // visualizer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, name());
       }
+      else if (visibility_ == ShowWholeCloud) {
+        cloud_cnt_++;
+        if ((cloud_cnt_ % 30) == 0) {
+          pcl::ApproximateVoxelGrid<AsyncPointCloudBuilder::PointCloud::PointType> vg;
+          vg.setDownsampleAllData(true);
+          vg.setLeafSize(0.01f, 0.01f, 0.01f);
+          AsyncPointCloudBuilder::PointCloud::Ptr downsampled_cloud(new AsyncPointCloudBuilder::PointCloud);
+          vg.setInputCloud(cloud_->build());
+          vg.filter(*downsampled_cloud);
+          aggregator.add(name() + std::to_string(cloud_cnt_), downsampled_cloud);
+        }
+
       //visualizer.addCube(cloud_->pose.translation().cast<float>(), Eigen::Quaternionf(cloud_->pose.rotation().cast<float>()), 0.05, 0.05, 0.05, cube_id);
       //visualizer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, color().r, color().g, color().b, cube_id);
       //visualizer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_REPRESENTATION, pcl::visualization::PCL_VISUALIZER_REPRESENTATION_SURFACE, cube_id);
     }
   }
+}
 private:
   Option visibility_;
   boost::shared_ptr<dvo::visualization::AsyncPointCloudBuilder::BuildJob> cloud_;
   boost::mutex m_;
+  int cloud_cnt_ = 0;
 };
 
 struct PclCameraTrajectoryVisualizerImpl
@@ -331,7 +345,7 @@ private:
 
     while(!visualizer_->wasStopped())
     {
-      render(1);
+      render(10);
     }
     visualizer_.reset();
   }

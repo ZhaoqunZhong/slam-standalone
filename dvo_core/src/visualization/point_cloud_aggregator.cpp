@@ -90,15 +90,18 @@ AsyncPointCloudBuilder::PointCloud::Ptr PointCloudAggregator::build()
 
   pcl::ApproximateVoxelGrid<AsyncPointCloudBuilder::PointCloud::PointType> vg;
   vg.setDownsampleAllData(true);
-  vg.setLeafSize(0.01f, 0.01f, 0.01f);
+  vg.setLeafSize(0.02f, 0.02f, 0.02f);
 
   size_t step = std::max(local.size() / size_t(50), size_t(1));
   size_t k = 0;
+  // std::cout << "------------------" << std::endl;
   for(PointCloudMap::iterator it = local.begin(); it != local.end(); ++it, ++k)
   {
+    // std::cout << "cloud name: " << it->first << std::endl;
     if((k % step) == 0)
     {
       (*highres_cloud) += *(it->second());
+      // std::cout << "cloud " << it->first << " added to highres_cloud." << std::endl;
     }
   }
 

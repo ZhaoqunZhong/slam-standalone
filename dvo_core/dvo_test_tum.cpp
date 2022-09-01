@@ -22,7 +22,7 @@
 #include <dvo_benchmark/groundtruth.h>
 #include <dvo_benchmark/tools.h>
 
-std::string data_folder = "/home/zhegushao/Downloads/rgbd_dataset_freiburg1_xyz/";
+std::string data_folder = "/home/zhegushao/Downloads/bg4/";
 
 dvo::core::RgbdCameraPtr camera;
 dvo::core::RgbdCameraPyramidPtr cameraPyramid;
@@ -110,8 +110,8 @@ class BenchmarkNode {
 bool BenchmarkNode::Config::EstimateRequired() { return EstimateTrajectory || ShowEstimate; }
 
 bool BenchmarkNode::Config::VisualizationRequired() {
-    // return ShowGroundtruth || ShowEstimate || RenderVideo;
-    return false;
+    return ShowGroundtruth || ShowEstimate || RenderVideo;
+    // return false;
 }
 
 BenchmarkNode::BenchmarkNode()
@@ -155,7 +155,7 @@ bool BenchmarkNode::configure() {
     }
 
     // video rendering related stuff
-    cfg_.RenderVideo = false;
+    cfg_.RenderVideo = true;
     // nh_private_.param("render_video", cfg_.RenderVideo, false);
     // if (cfg_.RenderVideo) {
     //     if (!nh_private_.getParam("video_folder", cfg_.VideoFolder) || cfg_.VideoFolder.empty()) {
@@ -294,7 +294,7 @@ void BenchmarkNode::createReferenceCamera(
 
 void BenchmarkNode::run() {
     // setup visualizer
-    dvo::visualization::Switch pause_switch(true), dummy_switch(false);
+    dvo::visualization::Switch pause_switch(true), dummy_switch(true);
     dvo::visualization::CameraTrajectoryVisualizerInterface* visualizer;
 
     if (cfg_.VisualizationRequired()) {
@@ -326,7 +326,7 @@ void BenchmarkNode::run() {
     // dvo::core::IntrinsicMatrix intrinsics = dvo::core::IntrinsicMatrix::create(525.0f, 525.0f,
     // 320.0f, 240.0f);
     dvo::core::IntrinsicMatrix intrinsics =
-        dvo::core::IntrinsicMatrix::create(517.3, 516.5, 318.6, 255.3);
+        dvo::core::IntrinsicMatrix::create(513.874, 513.874, 310.316, 238.07);
 
     camera.reset(new dvo::core::RgbdCamera(640, 480, intrinsics));
     cameraPyramid.reset(new dvo::core::RgbdCameraPyramid(*camera.get()));
@@ -378,19 +378,20 @@ void BenchmarkNode::run() {
         }
 
         // pause in the beginning
-        // renderWhileSwitchAndNotTerminated(visualizer, pause_switch);
-        // processInput(visualizer);
+        renderWhileSwitchAndNotTerminated(visualizer, pause_switch);
+        processInput(visualizer);
 
         if (!reference) {
             continue;
         }
-
-        // if ((it->RgbTimestamp() - pairs.front().RgbTimestamp()).toSec() < 5 ||
-        //     (pairs.back().RgbTimestamp() - it->RgbTimestamp()).toSec() < 5) {
-        //     visualizer->camera("reference")->show();
-        // } else {
-        //     visualizer->camera("reference")->hide();
-        // }
+/*
+        if ((it->RgbTimestamp() - pairs.front().RgbTimestamp()).toSec() < 5 ||
+            (pairs.back().RgbTimestamp() - it->RgbTimestamp()).toSec() < 5) {
+            visualizer->camera("reference")->show();
+        } else {
+            visualizer->camera("reference")->hide();
+        }*/
+        visualizer->camera("reference")->hide();
 
         if (cfg_.ShowGroundtruth) {
             Eigen::Affine3d groundtruth_pose;
@@ -431,14 +432,14 @@ void BenchmarkNode::run() {
             }
 
             if (cfg_.ShowEstimate) {
-                // visualizer->trajectory("estimate")
-                //     ->color(dvo::visualization::Color::red())
-                //     .add(trajectory);
+                visualizer->trajectory("estimate")
+                    ->color(dvo::visualization::Color::red())
+                    .add(trajectory);
 
-                // visualizer->camera("estimate")
-                //     ->color(dvo::visualization::Color::red())
-                //     .update(current->level(0), trajectory)
-                //     .show(dvo::visualization::CameraVisualizer::ShowCameraAndCloud);
+                visualizer->camera("estimate")
+                    ->color(dvo::visualization::Color::red())
+                    .update(current->level(0), trajectory)
+                    .show(dvo::visualization::CameraVisualizer::ShowWholeCloud);
             }
         }
 
@@ -452,8 +453,10 @@ void BenchmarkNode::run() {
         // sw_fps.stopAndPrint();
     }
 
+    LOG(INFO) << "Data sequence finished.";
+
     // keep visualization alive
-    // renderWhileSwitchAndNotTerminated(visualizer, dummy_switch);
+    renderWhileSwitchAndNotTerminated(visualizer, dummy_switch);
 }
 
 void CustomPrefix(std::ostream& s, const google::LogMessageInfo& l, void* data) {
